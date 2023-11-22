@@ -1,4 +1,5 @@
 const express = require('express');
+const bcrypt = require('bcrypt');
 
 const app = express();
 const port = 2000;
@@ -18,7 +19,7 @@ app.get('/memes', (req, res) => {
   res.sendFile(__dirname + '/public/meme.html');
 });
 
-app.post('/registerr', (req, res) => {
+app.post('/registerr', async (req, res) => {
   const { username, password } = req.body;
   if (!username || !password) {
     return res.status(400).json({ message: 'Invalid input. Please provide both username and password.' });
@@ -28,23 +29,39 @@ app.post('/registerr', (req, res) => {
     return res.status(409).json({ message: 'Username already taken' });
   }
 
-  users.push({ username, password });
-  res.status(201).json({ message: 'User registered successfully' });
+  try {
+    const hashedPassword = await bcrypt.hash(password, 10); //salt rounds 10
+
+    users.push({ username, password: hashedPassword });
+    res.status(201).json({ message: 'User registered successfully' });
+  } catch (error) {
+    console.error('Error hashing password:', error);
+    res.status(500).json({ message: 'An error occurred. Please try again much later...' });
+  }
 });
 
-app.post('/login', (req, res) => {
+app.post('/login', async (req, res) => {
   const { username, password } = req.body;
 
   const user = users.find((user) => user.username === username);
 
-  if (user && user.password === password) {
-    return res.status(200).json({ message: 'Login successful' });
-  } else if (user) {
-    return res.status(401).json({ message: 'Wrong password' });
+  if (user) {
+    try {
+      const passwordMatch = await bcrypt.compare(password, user.password);
+      if (passwordMatch) {
+        return res.status(200).json({ message: 'Login successful' });
+      } else {
+        return res.status(401).json({ message: 'Wrong password' });
+      }
+    } catch (error) {
+      console.error('Nice try buddy - Salt 100% :', error);
+      res.status(500).json({ message: 'An error occurred. Please try again much later...' });
+    }
   } else {
     return res.status(404).json({ message: 'User not found' });
   }
 });
+
 
 app.post('/post-meme', (req, res) => {
   const { memeUrl } = req.body;
