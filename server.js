@@ -14,6 +14,23 @@ app.use(express.json());
 
 app.use(express.static('public')); 
 
+const verifyToken = (req, res, next) => {
+  const token = req.headers.authorization;
+
+  if (!token) {
+    return res.status(401).json({ message: 'Token not provided' });
+  }
+
+  jwt.verify(token.slice('Bearer '.length), JWT_KEY, (err, decoded) => {
+    if (err) {
+      return res.status(401).json({ message: 'Token doesnt exist yet' });
+    }
+
+    req.loggedInUser = decoded; 
+    next();
+  });
+};
+
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/public/register.html'); 
 });
@@ -36,7 +53,6 @@ app.post('/registerr', async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10); //salt rounds 10
 
     users.push({ username, password: hashedPassword });
-    console.log(users)
     res.status(201).json({ message: 'User registered successfully' });
   } catch (error) {
     console.error('Error hashing password:', error);
@@ -67,13 +83,9 @@ app.post('/login', async (req, res) => {
   }
 });
 
-
-app.post('/post-meme', (req, res) => {
+app.post('/post-meme', verifyToken, (req, res) => {
   const { memeUrl } = req.body;
 
-  if (!req.loggedInUser) {
-    return res.status(401).json({ message: 'User not logged in' });
-  }
   if (!memeUrl) {
     return res.status(400).json({ message: 'Meme URL not present' });
   }

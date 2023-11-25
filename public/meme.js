@@ -7,7 +7,7 @@ document.getElementById("post-meme-form").addEventListener("submit", function (e
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        // TODO add authorization header
+        'Authorization': `Bearer ${localStorage.getItem("token")}`
       },
       body: JSON.stringify({ memeUrl  })
     })
