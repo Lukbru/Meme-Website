@@ -15,7 +15,7 @@ document.getElementById("post-meme-form").addEventListener("submit", function (e
       const data = response.json();
   
       const memeMessageDiv = document.getElementById('meme-message');
-      if (response.status === 200) {
+      if (response.status === 201) {
         memeMessageDiv.innerText = 'Meme posted successfully!';
       } else {
         memeMessageDiv.innerText = 'Failed to post meme. Please try again.';
