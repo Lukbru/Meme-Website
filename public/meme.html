@@ -5,25 +5,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Meme Page</title>
+    <link rel="stylesheet" href="meme.css">
 </head>
 <body>
     <h1>Meme Page</h1>
-    <style>
-        body {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 60vh; 
-        }
-    </style>
 
     <form id="post-meme-form">
         <input type="text" class="form-control" name="meme" id="meme" placeholder="Meme Post" required>
         <button type="submit">Post Meme</button>
+       <!-- label for="input-file">Post Image</label -->
+       <!--input type="file" accept="image/png ,image.jpg" id="input-file"-->
     </form>
 
     <div id="meme-message"></div>
+    
+    <div id="meme-container"></div>
 
     <script src="meme.js"></script>
 </body>

@@ -1,0 +1,49 @@
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    text-align: center; 
+}
+
+h1 {
+    text-align: center;
+}
+
+#post-meme-form {
+    text-align: center; 
+}
+
+#meme-container {
+    overflow-y: auto;
+    width: 80%; 
+    margin: auto; 
+    flex: 1;
+    box-sizing: border-box;
+}
+
+.meme-container {
+    margin-top: 10px;
+    border: 1px solid #000000;
+    padding: 10px;
+}
+
+.meme-container img {
+    max-width: 100%;
+    max-height: 100%;
+    height: auto;
+    display: block;
+}
+label{
+    display: block;
+    padding: 12px;
+    background-color: rgb(67, 85, 85);
+    color: rgb(0, 0, 0);
+    cursor: pointer;
+    border-radius: 5px;
+    text-align: center;
+}

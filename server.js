@@ -26,7 +26,7 @@ const verifyToken = (req, res, next) => {
       return res.status(401).json({ message: 'Token doesnt exist yet' });
     }
 
-    req.loggedInUser = decoded; 
+    req.loggedInUser = decoded;
     next();
   });
 };
@@ -69,7 +69,7 @@ app.post('/login', async (req, res) => {
     try {
       const passwordMatch = await bcrypt.compare(password, user.password);
       if (passwordMatch) {
-        const token = jwt.sign({}, JWT_KEY);
+        const token = jwt.sign({username}, JWT_KEY);
         return res.status(200).json({ message: 'Login successful', token });
       } else {
         return res.status(401).json({ message: 'Wrong password' });
@@ -87,12 +87,13 @@ app.post('/post-meme', verifyToken, (req, res) => {
   const { memeUrl } = req.body;
 
   if (!memeUrl) {
-    return res.status(400).json({ message: 'Meme URL not present' });
+      return res.status(400).json({ success: false, message: 'Meme URL not present' });
   }
 
-  memes.push({ user: req.loggedInUser, memeUrl });
+  const newMeme = { user: req.loggedInUser.username, memeUrl };
 
-  res.status(201).json({ message: 'Meme posted successfully' });
+  memes.push(newMeme);
+  res.status(201).json({ success: true, message: 'Meme posted successfully', meme: newMeme });
 });
 
 app.listen(port, () => {
