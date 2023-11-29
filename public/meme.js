@@ -28,21 +28,19 @@ document.getElementById("post-meme-form").addEventListener("submit", function (e
   });
 });
 function displayNewMeme(meme) {
-
-  const newMemeDiv = document.createElement('div');
-  newMemeDiv.className = 'meme-container';
-
-  const memeImage = document.createElement('img');
-  memeImage.src = meme.memeUrl;
-
-  const usernameParagraph = document.createElement('p');
-  usernameParagraph.innerText = `Posted by: ${meme.user}`;
-
-  newMemeDiv.appendChild(usernameParagraph);
-  newMemeDiv.appendChild(memeImage);
-
-  const memeContainer = document.getElementById('meme-container');
-  memeContainer.appendChild(newMemeDiv);
-
-  memeContainer.scrollTop = memeContainer.scrollHeight;
-}
+    const newMemeCard = document.createElement('div');
+    newMemeCard.className = 'card meme-container';
+  
+    const memeImage = document.createElement('img');
+    memeImage.src = meme.memeUrl;
+    memeImage.className = 'card-img-top';
+  
+    const usernameParagraph = document.createElement('p');
+    usernameParagraph.innerText = `Posted by: ${meme.user}`;
+  
+    newMemeCard.appendChild(usernameParagraph);
+    newMemeCard.appendChild(memeImage);
+  
+    const memeContainer = document.getElementById('meme-container');
+    memeContainer.insertBefore(newMemeCard, memeContainer.firstChild);
+  }
