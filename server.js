@@ -1,14 +1,23 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const { MongoClient, ServerApiVersion } = require('mongodb');
 
 const JWT_KEY = 'test123'
+const uri = 'mongodb+srv://bruzdalukasz1c:sRIHYQmheWqCYn3W@memewebsite.y2o9img.mongodb.net/?retryWrites=true&w=majority';
+
+const client = new MongoClient(uri, {
+  serverApi: {
+    version: ServerApiVersion.v1,
+    strict: true,
+    deprecationErrors: true,
+  }
+});
 
 const app = express();
 const port = 2000;
 
 const users = [];
-const memes = [];
 
 app.use(express.json());
 
@@ -83,20 +92,40 @@ app.post('/login', async (req, res) => {
   }
 });
 
-app.post('/post-meme', verifyToken, (req, res) => {
-  const { memeUrl } = req.body;
+app.get('/get-memes', async (req, res) => {
+  try {
+    const database = client.db('MemeWebsite');
+    const collection = database.collection('memes');
+    const allMemes = await collection.find().toArray();
+    res.json({ success: true, memes: allMemes });
+  } catch (error) {
+    console.error('Error loading memes:', error);
+    res.status(500).json({ success: false, message: 'An error occurred. Please try again later.' });
+  }
+});
 
+app.post('/post-meme', verifyToken, async (req, res) => {
+  const { memeUrl } = req.body;
+  
   if (!memeUrl) {
       return res.status(400).json({ success: false, message: 'Meme URL not present' });
   }
 
   const newMeme = { user: req.loggedInUser.username, memeUrl };
+  await SaveMeme(newMeme);
 
-  memes.push(newMeme);
   res.status(201).json({ success: true, message: 'Meme posted successfully', meme: newMeme });
 });
 
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
-});
+async function SaveMeme(meme) {
+     const database = client.db('MemeWebsite');
+     const collection = database.collection('memes');
+     await collection.insertOne(meme);
+}
 
+client.connect().then(() => {
+  app.listen(port, () => {
+  
+    console.log(`Server is running on port ${port}`);
+  });
+})

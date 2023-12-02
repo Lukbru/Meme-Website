@@ -1,3 +1,6 @@
+document.addEventListener('DOMContentLoaded', function () {
+  loadMemes();
+});
 document.getElementById("post-meme-form").addEventListener("submit", function (event) {
   event.preventDefault();
 
@@ -33,7 +36,11 @@ function displayNewMeme(meme) {
   
     const memeImage = document.createElement('img');
     memeImage.src = meme.memeUrl;
+    memeImage.alt = 'Meme Image';
     memeImage.className = 'card-img-top';
+
+    const postMemeForm = document.getElementById('post-meme-form');
+    postMemeForm.reset();
   
     const usernameParagraph = document.createElement('p');
     usernameParagraph.innerText = `Posted by: ${meme.user}`;
@@ -42,5 +49,22 @@ function displayNewMeme(meme) {
     newMemeCard.appendChild(memeImage);
   
     const memeContainer = document.getElementById('meme-container');
-    memeContainer.insertBefore(newMemeCard, memeContainer.firstChild);
-  }
+    memeContainer.appendChild(newMemeCard);  
+}
+function loadMemes() {
+  fetch('http://localhost:2000/get-memes')
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        const memes = data.memes;
+        for (const meme of memes) {
+          displayNewMeme(meme);
+        }
+      } else {
+        console.error('Failed to load memes:', data.message);
+      }
+    })
+    .catch(error => {
+      console.error('Error with loading memes:', error);
+    });
+}
