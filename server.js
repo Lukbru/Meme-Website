@@ -17,8 +17,6 @@ const client = new MongoClient(uri, {
 const app = express();
 const port = 2000;
 
-const users = [];
-
 app.use(express.json());
 
 app.use(express.static('public')); 
@@ -53,43 +51,49 @@ app.post('/registerr', async (req, res) => {
   if (!username || !password) {
     return res.status(400).json({ message: 'Invalid input. Please provide both username and password.' });
   }
-
-  if (users.some((user) => user.username === username)) {
-    return res.status(409).json({ message: 'Username already taken' });
-  }
-
   try {
     const hashedPassword = await bcrypt.hash(password, 10); //salt rounds 10
 
-    users.push({ username, password: hashedPassword });
-    res.status(201).json({ message: 'User registered successfully' });
+    const database = client.db('MemeWebsite');
+    const collection = database.collection('users');
+    const existingUser = await collection.findOne({ username });
+
+    if (existingUser) {
+      return res.status(409).json({ success: false, message: 'Username already taken' });
+    }
+
+    await collection.insertOne({ username, password: hashedPassword });
+    res.status(201).json({success: true, message: 'User registered successfully' });
   } catch (error) {
     console.error('Error hashing password:', error);
-    res.status(500).json({ message: 'An error occurred. Please try again much later...' });
+    res.status(500).json({success: false, message: 'An error occurred. Please try again much later...' });
   }
 });
 
 app.post('/login', async (req, res) => {
   const { username, password } = req.body;
 
-  const user = users.find((user) => user.username === username);
+  const database = client.db('MemeWebsite');
+  const collection = database.collection('users');
 
-  if (user) {
-    try {
-      const passwordMatch = await bcrypt.compare(password, user.password);
-      if (passwordMatch) {
+  const user = await collection.findOne({ username });
+
+  if (!user) {
+    return res.status(404).json({ success: false, message: 'User not found' });
+  }
+
+  try {
+    const passwordMatch = await bcrypt.compare(password, user.password);
+    if (passwordMatch) {
         const token = jwt.sign({username}, JWT_KEY);
-        return res.status(200).json({ message: 'Login successful', token });
+        return res.status(200).json({success: true, message: 'Login successful', token });
       } else {
-        return res.status(401).json({ message: 'Wrong password' });
+        return res.status(401).json({success: false, message: 'Wrong password' });
       }
     } catch (error) {
       console.error('Nice try buddy - Salt 100% :', error);
-      res.status(500).json({ message: 'An error occurred. Please try again much later...' });
+      res.status(500).json({success: false, message: 'An error occurred. Please try again much later...' });
     }
-  } else {
-    return res.status(404).json({ message: 'User not found' });
-  }
 });
 
 app.get('/get-memes', async (req, res) => {
