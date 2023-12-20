@@ -4,29 +4,44 @@
     <link rel="shortcut icon" href="#">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Meme Page</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="meme.css">
+    <title>Meme Page</title> 
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"> <!-- Bootstrap uzywany na wyglad strony -->
+    <link rel="stylesheet" href="meme.css"> <!-- Css uzywane na wyglad strony -->
 </head>
 <body>
     <div class="container">
-        <h1 class="text-center mt-3 mb-4">Meme Page</h1>
-        <a href="register.html" class="btn btn-secondary mt-2">Go to Register</a>
-        <a href="login.html" class="btn btn-secondary mt-2">Go to Login</a>
+        <h1 class="text-center mt-3 mb-4">Meme Page</h1> <!-- Tekst nazwy strony na sirodku strony -->
 
+        <div class="text-middle"> <!-- Tekst na sirodku strony -->
+            <a href="register.html" class="btn btn-secondary mt-2">Go to Register</a> <!-- Przycisk na wylogowanie sieprzejscie do strony z rejestracja -->
+            <a href="login.html" class="btn btn-secondary mt-2">Go to Login</a> <!-- Przycisk na przejscie do strony z logowaniem -->
+
+            <button id="logout-btn" class="btn btn-secondary mt-2">Log Out</button> <!-- Przycisk na wylogowanie sie -->
+
+            <button onclick="sortMemes()" class="btn btn-secondary mt-2">Sort Memes</button> <!-- Przycisk na sortowanie memów -->
+            
+          <div class="text-center mt-3">
+            <select id="sort-order" class="custom-select mr-2"> <!-- Opcje wyboru sortowania -->
+              <option value="newest">Old Memes</option> 
+              <option value="oldest">New Memes</option>
+            </select>
+
+            <div id="logout-message" class="alert alert-success mt-2" style="display: none;"> <!-- Miejsce gdzie wiadomosc pokazujaca ,ze sie uzytkownik wylogowal -->
+            </div>
+           
         <form id="post-meme-form" class="text-center">
             <input type="text" class="form-control" name="meme" id="meme" placeholder="Meme Post" required>
-            <button type="submit" class="btn btn-primary mt-2">Post Meme</button>
-                   <!-- label for="input-file">Post Image</label -->
+            <button type="submit" class="btn btn-primary mt-2">Post Meme</button> <!-- Przycisk do postowanie memow -->
+                   <!-- label for="input-file">Post Image</label --> <!-- NIeuzywana czesc kodu -->
                    <!--input type="file" accept="image/png ,image.jpg" id="input-file"-->
         </form>
 
 
-     <div id="meme-message" class="text-center"></div>
+     <div id="meme-message" class="text-center"></div>  <!-- Wiadomosc wyskakujaca na sirodku -->
 
-        <div id="meme-container" class="row justify-content-center"></div>
+     <div id="meme-container" class="row justify-content-center"></div> <!-- Boxy z memai na sirodku strony -->
     </div>
 
-    <script src="meme.js"></script>
+    <script src="meme.js"></script> <!-- Javascript uzywany dla strony z memai -->
 </body>
 </html>

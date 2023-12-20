@@ -3,22 +3,22 @@ html, body {
     margin: 0;
 }
 
-body {
+body { /* Sirodkowanie tekstu w body */
     display: flex;
     flex-direction: column;
     min-height: 100vh;
     text-align: center; 
 }
 
-h1 {
+h1 { /* Sirodkowanie tekstu */
     text-align: center;
 }
 
-#post-meme-form {
+#post-meme-form { /* Sirodkowanie tekstu */
     text-align: center; 
 }
 
-#meme-container {
+#meme-container { /* Css dla posta z memem */
     overflow-y: auto;
     width: 80%; 
     margin: auto; 
@@ -26,19 +26,19 @@ h1 {
     box-sizing: border-box;
 }
 
-.meme-container {
+.meme-container { /* Odstep i kolor krawedzi boxa z memem */
     margin-top: 10px;
     border: 1px solid #000000;
     padding: 10px;
 }
 
-.meme-container img {
+.meme-container img { /* Wielkosc obrazka mema */
     width: 550px;
     max-height: 750px;  
     height: auto;
     display: block;
 }
-label{
+label{ /* NIe uzywane */
     display: block;
     padding: 12px;
     background-color: rgb(67, 85, 85);
@@ -47,3 +47,6 @@ label{
     border-radius: 5px;
     text-align: center;
 }
+#logout-btn { 
+    vertical-align: middle;
+  }
